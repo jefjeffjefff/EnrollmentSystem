@@ -18,11 +18,31 @@ namespace EnrollmentSystem.Controllers
             _db = db;
         }
 
+
+        // Create
         [HttpPost]
         public IActionResult SaveStudent(Student student)
         {
             _db.Students.Add(student);
             _db.SaveChanges();
+
+            return Ok(student);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateStudent(Student student)
+        {
+            var currentStudent = _db.Students.FirstOrDefault(c => c.Id == student.Id);
+            if (currentStudent != null)
+            {
+                currentStudent.FirstName = student.FirstName;
+                currentStudent.LastName = student.LastName;
+                currentStudent.DateOfBirth = student.DateOfBirth;
+                currentStudent.Address = student.Address;
+
+                _db.Students.Update(currentStudent);
+                await _db.SaveChangesAsync();
+            }
 
             return Ok(student);
         }

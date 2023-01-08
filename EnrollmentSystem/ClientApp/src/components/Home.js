@@ -19,6 +19,7 @@ const Home = () => {
   const [lastName, setLastName] = useState("");
   const [DOB, setDOB] = useState("");
   const [address, setAddress] = useState("");
+  const [studentId, setStudentID] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [studentList, setStudentList] = useState([]);
 
@@ -29,8 +30,9 @@ const Home = () => {
   const saveStudent = () => {
     axios({
       url: "/student",
-      method: "POST",
+      method: studentId ? 'PUT' : 'POST',
       data: {
+        id: studentId,
         firstName: firstName,
         lastName: lastName,
         address: address,
@@ -59,6 +61,25 @@ const Home = () => {
         setErrorMessage(JSON.stringify(err));
       });
   };
+
+
+  const loadStudentForm = (student) => {
+    setFirstName(student.firstName)
+    setLastName(student.lastName)
+    setDOB(new Date('2022-12-04'))
+    setAddress(student.address)
+    setStudentID(student.id)
+
+  }
+
+  const cancelUpdateStudent = () => {
+    
+    setFirstName('')
+    setLastName('')
+    setDOB('')
+    setAddress('')
+    setStudentID('')
+  }
 
   const deleteStudent = (studentId) => {
     MySwal.fire({
@@ -126,6 +147,14 @@ const Home = () => {
                     >
                       Delete
                     </button>
+                    
+                    <button
+                      onClick={() => loadStudentForm(s)}
+                      type="button"
+                      className="btn btn-outline-primary"
+                    >
+                      Edit
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -181,8 +210,18 @@ const Home = () => {
             type="button"
             className="btn btn-primary"
           >
-            Save
+            {studentId ? 'Update' : 'Save'}
           </button>
+
+          {studentId && <button 
+            onClick={cancelUpdateStudent}
+            type="button"
+            className="btn btn-secondary"
+          >
+            Cancel 
+          </button>}
+
+
         </div>
       </div>
     </>
